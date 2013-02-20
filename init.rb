@@ -1,22 +1,22 @@
-# encoding: utf-8
+require "redmine_omniauth"
 
-require 'redmine'
-require 'chiliproject_omniauth'
+Redmine::Plugin.register :redmine_omniauth do
+  name "Redmine OmniAuth plugin"
+  author "cj Advertising, LLC"
+  description "OmniAuth support for Redmine plugins"
+  version "0.0.1"
+  url "https://github.com/cjAdvertising/redmine_omniauth"
+  author_url "http://cjadvertising.com"
 
-Redmine::Plugin.register :chiliproject_omniauth do
-  name 'Chiliproject OmniAuth plugin'
-  author 'cj Advertising, LLC'
-  description 'OmniAuth support for plugins'
-  version '0.0.1'
-  url 'https://github.com/cjAdvertising/chiliproject_omniauth'
-  author_url 'http://cjadvertising.com'
-
-  ChiliprojectOmniauth::Patches::Plugin.patch
+  Redmine::Plugin.send :include, RedmineOmniauth::Plugin
 end
 
-config.middleware.use OmniAuth::Builder do
+RedmineApp::Application.config.middleware.use OmniAuth::Builder do
   configure do |config|
-    config.on_failure = ChiliprojectOmniauth::FailureEndpoint
+    config.on_failure = RedmineOmniauth::FailureEndpoint
   end
-  ChiliprojectOmniauth.registered.each { |p, args| provider p, *args }
+  provider :chiliproject_analytics, 
+      approval_prompt: 'force',
+      scope: 'userinfo.email,userinfo.profile,analytics.readonly'
+  # RedmineOmniauth.registered.each { |p, args| provider p, *args }
 end

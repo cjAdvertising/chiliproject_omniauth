@@ -1,12 +1,10 @@
-# encoding: utf-8
+require "redmine"
+require "omniauth"
+require "active_support/concern"
+require "redmine_omniauth/plugin"
 
-require 'redmine'
-require 'omniauth'
-require 'chiliproject_omniauth/patches/base'
-require 'chiliproject_omniauth/patches/plugin'
-
-# Public: Chiliproject OmniAuth support module.
-module ChiliprojectOmniauth
+# Public: Redmine OmniAuth support module.
+module RedmineOmniauth
 
   @@registered = {}
 
@@ -43,13 +41,11 @@ module ChiliprojectOmniauth
     #
     # Returns Rack::Response redirect to failure endpoint URL.
     def redirect_to_failure
-      message_key = env['omniauth.error.type']
-      new_path = "#{env['SCRIPT_NAME']}#{OmniAuth.config.path_prefix}/#{env['omniauth.error.strategy'].name}/failure?message=#{message_key}#{origin_query_param}#{strategy_name_query_param}"
-      Rack::Response.new(["302 Moved"], 302, 'Location' => new_path).finish
+      message_key = env["omniauth.error.type"]
+      new_path = "#{env["SCRIPT_NAME"]}#{OmniAuth.config.path_prefix}/#{env["omniauth.error.strategy"].name}/failure?message=#{message_key}#{origin_query_param}#{strategy_name_query_param}"
+      Rack::Response.new(["302 Moved"], 302, "Location" => new_path).finish
     end
   end
 
-  # Public: Various patches for Redmine/Chiliproject core.
-  module Patches
-  end
+  Redmine::Plugin.send :include, Plugin
 end

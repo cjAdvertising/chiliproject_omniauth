@@ -1,24 +1,24 @@
-# Chiliproject OmniAuth
+# Redmine OmniAuth
 
 Provides support for [OmniAuth](http://omniauth.org) in 
-[Chiliproject](http://chiliproject.org) plugins.
+[Redmine](http://redmine.org) plugins.
 
 
 ## Usage
 
-Install the plugin in `vendor/plugins/chiliproject_omniauth`. In plugins which 
+Install the plugin in `vendor/plugins/redmine_omniauth`. In plugins which 
 require OmniAuth, use `requires_redmine_plugin` to ensure the OmniAuth plugin
 is loaded. Then register the desired OmniAuth strategy using `auth_provider` in
 the `Redmine::Plugin.register` block:
 
 ```ruby
-# vendor/plugins/chiliproject_example/init.rb
+# vendor/plugins/redmine_example/init.rb
 
-Redmine::Plugin.register :chiliproject_example do
+Redmine::Plugin.register :redmine_example do
   name 'Some example plugin that uses Twitter authorization'
   # ...
 
-  requires_redmine_plugin :chiliproject_omniauth, '0.0.1'
+  requires_redmine_plugin :redmine_omniauth, '0.0.1'
   auth_provider :twitter, 'consumer_key', 'consumer_secret'
 end
 ```
@@ -63,7 +63,7 @@ end
 Set up routes to handle the OmniAuth endpoints:
 
 ```ruby
-# vendor/plugins/chiliproject_example/routes.rb
+# vendor/plugins/redmine_example/routes.rb
 map.with_options :controller => 'example_twitter_auth' do |routes|
   routes.with_options :conditions => {:method => :get} do |views|
     views.connect 'auth/twitter', :action => 'authorize'
